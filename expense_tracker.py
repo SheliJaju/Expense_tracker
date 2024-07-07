@@ -8,7 +8,7 @@ class ExpenseTrackerApp:
         self.root = root
         self.root.title("Expense Tracker")
         
-        self.expenses = []
+        self.expenses = []  # Ensure expenses is initialized
         self.filepath = 'expenses.csv'
         self.load_expenses()
         
@@ -36,15 +36,15 @@ class ExpenseTrackerApp:
         # Buttons
         self.add_button = ttk.Button(root, text="Add Expense", command=self.add_expense)
         self.add_button.grid(row=4, column=0, columnspan=2, pady=10)
+
+        self.expense_list = tk.Listbox(root, width=50)
+        self.expense_list.grid(row=7, column=0, columnspan=2, padx=10, pady=5)
         
         self.delete_button = ttk.Button(root, text="Delete Selected Expense", command=self.delete_expense)
         self.delete_button.grid(row=5, column=0, columnspan=2, pady=10)
         
         self.view_button = ttk.Button(root, text="View Expenses", command=self.view_expenses)
         self.view_button.grid(row=6, column=0, columnspan=2, pady=10)
-        
-        self.expense_list = tk.Listbox(root, width=50)
-        self.expense_list.grid(row=7, column=0, columnspan=2, padx=10, pady=5)
         
     def add_expense(self):
         date = self.date_entry.get()
@@ -78,11 +78,9 @@ class ExpenseTrackerApp:
             messagebox.showwarning("Selection Error", "Please select an expense to delete.")
     
     def view_expenses(self):
-        if self.expenses:
-            expenses = "\n".join(self.expenses)
-            messagebox.showinfo("Expenses", expenses)
-        else:
-            messagebox.showinfo("No Expenses", "No expenses to show.")
+        self.expense_list.delete(0, tk.END)
+        for expense in self.expenses:
+            self.expense_list.insert(tk.END, expense)
     
     def save_expenses(self):
         with open(self.filepath, 'w', newline='') as file:
@@ -97,7 +95,6 @@ class ExpenseTrackerApp:
                 for row in reader:
                     expense = " | ".join(row)
                     self.expenses.append(expense)
-                    self.expense_list.insert(tk.END, expense)
 
 if __name__ == "__main__":
     root = tk.Tk()
